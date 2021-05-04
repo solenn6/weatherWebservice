@@ -21,12 +21,14 @@ class Weather:
         temp_min = data_weather.get('main').get('temp_min')
         temp_max = data_weather.get('main').get('temp_max')
         meteo = data_weather.get('weather')[0].get('main')
+        humidite = data_weather.get('main')[0].get('grnd_level')
         jsonResponse = json.dumps({
             'main': {
                 'temp': self.k_to_c(temp_actuelle),
                 'temp_max': self.k_to_c(temp_max),
-                'temp_min' : self.k_to_c(temp_min),
-                'meteo': meteo
+                'temp_min': self.k_to_c(temp_min),
+                'meteo': meteo,
+                'humidité': humidite
 
             }
         })
