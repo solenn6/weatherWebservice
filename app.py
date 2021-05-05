@@ -1,27 +1,23 @@
 import web
 import json
-# import cleAPI
 import requests
 import dotenv
 import os
 import pymysql.cursors
+import datetime
 
 dotenv.load_dotenv()
 API_Key = os.environ.get('API_KEY')
-DB_Host = os.environ.get('DB_HOST')
-DB_User = os.environ.get('DB_USER')
-DB_Password = os.environ.get('DB_PASSWORD')
-DB_Name = os.environ.get('DB_NAME')
-DB_Port = os.environ.get('DB_PORT')
+API_Adress = os.environ.get('API_ADRESS')
 
-# connexion = pymysql.connect(
-#     host=DB_Host,
-#     user=DB_User,
-#     password=DB_Password,
-#     db=DB_Name,
-#     charset='utf8',
-#     port=int(DB_Port)
-# )
+connexion = pymysql.connect(
+    host=os.environ.get('DB_HOST'),
+    user=os.environ.get('DB_USER'),
+    password=os.environ.get('DB_PASSWORD'),
+    db=os.environ.get('DB_NAME'),
+    charset='utf8',
+    port=int(os.environ.get('DB_PORT'))
+)
 
 # key = cleAPI.API_key
 
@@ -34,26 +30,22 @@ app = web.application(urls, globals())
 
 class Weather:
     def GET(self, codePostal, countryCode):
-        web.headers = {"Content_Type": "application/json"}
-        base_url = 'http://api.openweathermap.org/data/2.5/weather?zip=' + codePostal + ',' + countryCode + '&appid=' + API_Key
+        web.header('Content_Type', 'application/json')
+        web.header('charset', 'utf-8')
+        # date_actuelle = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        base_url = API_Adress + codePostal + ',' + countryCode + '&appid=' + API_Key
         data_weather = requests.get(base_url).json()
-        temp_actuelle = data_weather.get('main').get('temp')
-        temp_min = data_weather.get('main').get('temp_min')
-        temp_max = data_weather.get('main').get('temp_max')
-        meteo = data_weather.get('weather')[0].get('main')
-        humidite = data_weather.get('main').get('grnd_level')
-        ville = data_weather.get('name')
         jsonResponse = json.dumps({
             'main': {
-                'name': ville,
-                'temp': self.k_to_c(temp_actuelle),
-                'temp_max': self.k_to_c(temp_max),
-                'temp_min': self.k_to_c(temp_min),
-                'meteo': meteo,
-                'humidité': humidite
+                'name': data_weather.get('name'),
+                'temp': self.k_to_c(data_weather.get('main').get('temp')),
+                'temp_max': self.k_to_c(data_weather.get('main').get('temp_max')),
+                'temp_min': self.k_to_c(data_weather.get('main').get('temp_min')),
+                'meteo': data_weather.get('weather')[0].get('main'),
+                'humidité': data_weather.get('main').get('grnd_level')
 
             }
-        })
+        }, indent=4)
         return jsonResponse
 
     # def getField(self, cle, valeur, dataJson):
