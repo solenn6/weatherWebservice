@@ -3,23 +3,12 @@ import json
 import requests
 import dotenv
 import os
-import pymysql.cursors
+import mysql.connector
 import datetime
 
 dotenv.load_dotenv()
 API_Key = os.environ.get('API_KEY')
 API_Adress = os.environ.get('API_ADRESS')
-
-connexion = pymysql.connect(
-    host=os.environ.get('DB_HOST'),
-    user=os.environ.get('DB_USER'),
-    password=os.environ.get('DB_PASSWORD'),
-    db=os.environ.get('DB_NAME'),
-    charset='utf8',
-    port=int(os.environ.get('DB_PORT'))
-)
-
-# key = cleAPI.API_key
 
 urls = (
     '/([0-9]{5}),([A-Za-z]{2})', 'Weather',
@@ -48,13 +37,54 @@ class Weather:
         }, indent=4)
         return jsonResponse
 
-    # def getField(self, cle, valeur, dataJson):
-    #     return dataJson.get('cle').get('valeur')
 
     def k_to_c(self, temperature):
         celsius = temperature - 273.15
         return celsius
 
+    # def connectDB(self):
+    #     return db
+
+    def insertWeather(self):
+        try:
+            connexion = mysql.connector.connect(
+                host=os.environ.get('DB_HOST'),
+                user=os.environ.get('DB_USER'),
+                password=os.environ.get('DB_PASSWORD'),
+                db=os.environ.get('DB_NAME'),
+                charset='utf8',
+                port=int(os.environ.get('DB_PORT'))
+            )
+            cursor = connexion.cursor()
+            cursor.execute()
+            connexion.close()
+        except mysql.connector.Error as err:
+            print("Une erreur est survenu".format(err))
+        return 0
+
+    def checkTempActuelleExist(self, codePostal):
+        retour = False
+        try:
+            connexion = mysql.connector.connect(
+                host=os.environ.get('DB_HOST'),
+                user=os.environ.get('DB_USER'),
+                password=os.environ.get('DB_PASSWORD'),
+                db=os.environ.get('DB_NAME'),
+                charset='utf8',
+                port=int(os.environ.get('DB_PORT'))
+            )
+            cursor = connexion.cursor()
+            cursor.execute()
+            # Si présent dans la base de donnée
+            retour = True
+            connexion.close()
+        except mysql.connector.Error as err:
+            print("Une erreur est survenu".format(err))
+
+        return retour
+
 
 if __name__ == "__main__":
     app.run()
+
+
