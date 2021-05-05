@@ -4,14 +4,24 @@ import json
 import requests
 import dotenv
 import os
+import pymysql.cursors
 
-dotenv.load_dotenv(dotenv.find_dotenv())
+dotenv.load_dotenv()
 API_Key = os.environ.get('API_KEY')
 DB_Host = os.environ.get('DB_HOST')
 DB_User = os.environ.get('DB_USER')
 DB_Password = os.environ.get('DB_PASSWORD')
 DB_Name = os.environ.get('DB_NAME')
 DB_Port = os.environ.get('DB_PORT')
+
+# connexion = pymysql.connect(
+#     host=DB_Host,
+#     user=DB_User,
+#     password=DB_Password,
+#     db=DB_Name,
+#     charset='utf8',
+#     port=int(DB_Port)
+# )
 
 # key = cleAPI.API_key
 
