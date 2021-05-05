@@ -14,16 +14,18 @@ app = web.application(urls, globals())
 
 class Weather:
     def GET(self, codePostal, countryCode):
-        web.header('Content_Type', 'application/json')
+        web.headers = {"Content_Type": "application/json"}
         base_url = 'http://api.openweathermap.org/data/2.5/weather?zip=' + codePostal + ',' + countryCode + '&appid=' + key
         data_weather = requests.get(base_url).json()
         temp_actuelle = data_weather.get('main').get('temp')
         temp_min = data_weather.get('main').get('temp_min')
         temp_max = data_weather.get('main').get('temp_max')
         meteo = data_weather.get('weather')[0].get('main')
-        humidite = data_weather.get('main')[0].get('grnd_level')
+        humidite = data_weather.get('main').get('grnd_level')
+        ville = data_weather.get('name')
         jsonResponse = json.dumps({
             'main': {
+                'name': ville,
                 'temp': self.k_to_c(temp_actuelle),
                 'temp_max': self.k_to_c(temp_max),
                 'temp_min': self.k_to_c(temp_min),
